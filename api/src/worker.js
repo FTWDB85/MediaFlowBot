@@ -1,3 +1,4 @@
+
 const ALLOWED_DOMAINS = [
   "youtube.com",
   "youtu.be",
@@ -87,16 +88,6 @@ export default {
           )
           .bind(jobId, media.url, media.platform, "pending", expiresAt)
           .run();
-
-        return Response.json(
-          {
-            job_id: jobId,
-            platform: media.platform,
-            status: "pending",
-            message: "Job successfully saved.",
-          },
-          { status: 201 }
-        );
       } catch (error) {
         console.error("Failed to save job:", error);
 
@@ -105,6 +96,40 @@ export default {
           { status: 500 }
         );
       }
+
+      try {
+        await env.mediaflow_jobs.send({
+          job_id: jobId,
+        });
+      } catch (error) {
+        console.error("Failed to enqueue job:", error);
+
+        try {
+          await env.mediaflow_db
+            .prepare(
+              "UPDATE jobs SET status = ? WHERE id = ?"
+            )
+            .bind("queue_failed", jobId)
+            .run();
+        } catch (dbError) {
+          console.error("Failed to update job status:", dbError);
+        }
+
+        return Response.json(
+          { error: "Failed to enqueue job" },
+          { status: 503 }
+        );
+      }
+
+      return Response.json(
+        {
+          job_id: jobId,
+          platform: media.platform,
+          status: "pending",
+          message: "Job successfully queued.",
+        },
+        { status: 201 }
+      );
     }
 
     return Response.json(

@@ -1,0 +1,36 @@
+{
+  "name": "mediaflow-processor",
+  "main": "src/worker.js",
+  "workers_dev": true,
+  "preview_urls": false,
+  "compatibility_date": "2026-10-30",
+
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true
+    }
+  },
+
+  "d1_databases": [
+    {
+      "binding": "mediaflow_db",
+      "database_name": "mediaflow-db",
+      "database_id": "b42102a0-5f56-4449-a309-e8745e60f5ff",
+      "remote": true
+    }
+  ],
+
+  "queues": {
+    "consumers": [
+      {
+        "queue": "mediaflow-jobs",
+        "max_batch_size": 1,
+        "max_batch_timeout": 5,
+        "max_retries": 3,
+        "dead_letter_queue": "mediaflow-jobs-dlq"
+      }
+    ]
+  }
+}
