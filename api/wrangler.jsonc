@@ -1,23 +1,34 @@
 {
-  "name": "mediaflow-api",
-  "main": "src/worker.js",
-  "workers_dev": true,
-  "preview_urls": false,
-  "compatibility_date": "2026-10-30",
-  "observability": {
-    "enabled": true,
-    "head_sampling_rate": 1,
-    "redact_query_string": false,
-    "logs": {
-      "enabled": true,
-      "head_sampling_rate": 1,
-      "persist": true,
-      "invocation_logs": true
-    },
-    "traces": {
-      "enabled": false,
-      "persist": true,
-      "head_sampling_rate": 1
-    }
-  }
+	"name": "mediaflow-api",
+	"main": "src/worker.js",
+	"workers_dev": true,
+	"preview_urls": false,
+	"compatibility_date": "2026-10-30",
+	"observability": {
+		"enabled": true,
+		"head_sampling_rate": 1,
+		"redact_query_string": false,
+		"logs": {
+			"enabled": true,
+			"head_sampling_rate": 1,
+			"persist": true,
+			"invocation_logs": true
+		},
+		"traces": {
+			"enabled": false,
+			"persist": true,
+			"head_sampling_rate": 1
+		}
+	},
+	"d1_databases": [
+		{
+			"binding": "mediaflow_db",
+			"database_name": "mediaflow-db",
+			"database_id": "b42102a0-5f56-4449-a309-e8745e60f5ff",
+			"remote": true
+		}
+	],
+	"triggers": {
+			"crons": ["*/15 * * * *"]
+	}
 }
